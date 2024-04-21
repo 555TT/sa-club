@@ -7,7 +7,6 @@ import com.xiaoshouwaliang.subject.application.controller.dto.SubjectCategoryDTO
 import com.xiaoshouwaliang.subject.common.entity.Result;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectCategoryBO;
 import com.xiaoshouwaliang.subject.domain.service.SubjectCategoryDomainService;
-import com.xiaoshouwaliang.subject.infra.basic.service.SubjectCategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
