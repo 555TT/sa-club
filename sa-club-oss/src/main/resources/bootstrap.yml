@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: sa-club-oss
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 182.92.85.80:8848
+        prefix: ${spring.application.name}
+        group: DEFAULT_GROUP
+        namespace: public
+        file-extension: yaml
