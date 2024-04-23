@@ -1,6 +1,5 @@
-package com.xiaoshouwaliang.auth;
+package com.xiaoshouwaliang.gateway;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan("com.xiaoshouwaliang")
 //@MapperScan("com.xiaoshouwaliang.**.mapper")
-public class AuthApplication {
+public class GatewayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AuthApplication.class);
+        SpringApplication.run(GatewayApplication.class);
     }
 }

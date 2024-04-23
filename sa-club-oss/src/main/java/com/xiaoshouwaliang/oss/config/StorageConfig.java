@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
  * 文件存储config
  */
 @Configuration
-//@RefreshScope
+@RefreshScope
 public class StorageConfig {
 
     @Value("${storage.service.type}")
     private String storageType;
     @Bean
-//    @RefreshScope
+    @RefreshScope
     public StorageAdapter storageService() {
         if ("minio".equals(storageType)) {
             return new MinioStorageAdapter();
