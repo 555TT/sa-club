@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: WGEFmpkJOIIbL4esrnIrL2M4hYEzkMkLtBgKk0xtGNmIIOnCpWS2By1EC7f/3NH0y3u3m0Bl0g6DBLgopcCFKw==
+    url: jdbc:mysql://182.92.85.80:3306/sa-club?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 20
+      min-idle: 20
+      max-active: 100
+      max-wait: 60000
+      connectionProperties: config.decrypt=true;config.decrypt.key=${publicKey};
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-password: 123456
+        login-username: admin
+      filter:
+        stat:
+          enabled: true
+          slow-sql-millis: 2000
+          log-slow-sql: true
+        wall:
+          enabled: true
+        config:
+          enabled: true
+publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4+CzbqOUoD85vXwDiXgIV4EvZUbz1FRLVliQPq/5fZPSqZwhjX52c7mM2LPmok/2dsKtrCgbD7sEYKLxG9jJkCAwEAAQ==
+logging:
+  config: classpath:log4j2-spring.xml
