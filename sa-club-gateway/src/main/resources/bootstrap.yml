@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: sa-club-gateway
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: 182.92.85.80:8848
+      config:
+        prefix: ${spring.application.name}
+        group: DEFAULT_GROUP
+        namespace:
+        file-extension: yaml
+      discovery:
+        enabled: true
