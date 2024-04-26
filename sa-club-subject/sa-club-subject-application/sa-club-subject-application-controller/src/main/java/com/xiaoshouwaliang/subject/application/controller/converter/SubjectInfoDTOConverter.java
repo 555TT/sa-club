@@ -1,9 +1,7 @@
 package com.xiaoshouwaliang.subject.application.controller.converter;
 
 import com.xiaoshouwaliang.subject.application.controller.dto.SubjectInfoDTO;
-import com.xiaoshouwaliang.subject.application.controller.dto.SubjectLabelDTO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
-import com.xiaoshouwaliang.subject.domain.entity.SubjectLabelBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
