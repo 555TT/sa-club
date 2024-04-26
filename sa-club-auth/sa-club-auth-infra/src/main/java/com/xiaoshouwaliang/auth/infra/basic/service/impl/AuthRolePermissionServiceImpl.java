@@ -68,4 +68,9 @@ public class AuthRolePermissionServiceImpl implements AuthRolePermissionService 
     public void batchInsert(List<AuthRolePermission> authRolePermissions) {
         authRolePermissionDao.insertBatch(authRolePermissions);
     }
+
+    @Override
+    public List<AuthRolePermission> queryByCondition(AuthRolePermission authRolePermission) {
+        return authRolePermissionDao.queryByCondition(authRolePermission);
+    }
 }

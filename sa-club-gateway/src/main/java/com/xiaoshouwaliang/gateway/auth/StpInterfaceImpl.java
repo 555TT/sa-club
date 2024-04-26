@@ -2,7 +2,7 @@ package com.xiaoshouwaliang.gateway.auth;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.gateway.redis.RedisUtil;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
@@ -39,7 +39,6 @@ public class StpInterfaceImpl implements StpInterface {
         if(StringUtils.isBlank(value)){
             return Collections.emptyList();
         }
-        List roleList = new Gson().fromJson(value, List.class);
-        return roleList;
+       return JSON.parseObject(value,List.class);
     }
 }

@@ -50,4 +50,12 @@ public interface AuthRolePermissionService {
      * @param authRolePermissions
      */
     void batchInsert(List<AuthRolePermission> authRolePermissions);
+
+    /**
+     * 根据条件查询List<AuthRolePermission>
+     * @param authRolePermission
+     * @return
+     */
+
+    List<AuthRolePermission> queryByCondition(AuthRolePermission authRolePermission);
 }

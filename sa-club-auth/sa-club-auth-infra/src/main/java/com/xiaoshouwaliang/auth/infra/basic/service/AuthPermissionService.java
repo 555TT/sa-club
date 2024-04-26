@@ -1,6 +1,9 @@
 package com.xiaoshouwaliang.auth.infra.basic.service;
 
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthPermission;
+
+import java.util.List;
+
 /**
  * (AuthPermission)表服务接口
  *
@@ -42,4 +45,10 @@ public interface AuthPermissionService {
      */
     boolean deleteById(Long id);
 
+    /**
+     * 通过批量id查询数据
+     * @param permissionIds
+     * @return
+     */
+    List<AuthPermission> queryByIds(List<Long> permissionIds);
 }
