@@ -41,4 +41,6 @@ public interface UserInfoDomainService {
      * @return
      */
     AuthUserBO queryUserInfo(AuthUserBO authUserBO);
+
+    Object login(String validCode);
 }

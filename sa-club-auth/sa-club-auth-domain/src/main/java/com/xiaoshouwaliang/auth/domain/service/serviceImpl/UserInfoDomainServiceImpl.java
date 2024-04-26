@@ -1,6 +1,8 @@
 package com.xiaoshouwaliang.auth.domain.service.serviceImpl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.auth.common.enums.IsDeletedFlagEnum;
 import com.xiaoshouwaliang.auth.domain.constants.AuthConstant;
@@ -58,7 +60,9 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
         //插入用户基本信息表
         authUser.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
         authUser.setStatus(0);//用户启用禁用状态 0启用1禁用
-        authUser.setPassword(SaSecureUtil.aesEncrypt(key, authUser.getPassword()));//采用AEC对称加密算法密码加密
+        if(authUser.getPassword()!=null){
+            authUser.setPassword(SaSecureUtil.aesEncrypt(key, authUser.getPassword()));//采用AEC对称加密算法密码加密
+        }
 /*        if(log.isInfoEnabled()){
             log.info("解密后密码：{}",SaSecureUtil.aesDecrypt(key,authUser.getPassword()));
         }*/
@@ -116,5 +120,20 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
         AuthUser authUser = AuthUserBOConverter.INSTANCE.authUserBOtoPOJO(authUserBO);
         AuthUser result = authUserService.queryByUserName(authUser);
         return AuthUserBOConverter.INSTANCE.authUserPOJOtoBO(result);
+    }
+
+    @Override
+    public SaTokenInfo login(String validCode) {
+        String openId = redisUtil.get("loginKey." + validCode);
+        if(openId==null){
+            return null;
+        }
+        AuthUserBO authUserBO = new AuthUserBO();
+        authUserBO.setUserName(openId);
+        addUser(authUserBO);
+        StpUtil.login(openId);
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+        redisUtil.del("loginKey." + validCode);
+        return tokenInfo;
     }
 }
