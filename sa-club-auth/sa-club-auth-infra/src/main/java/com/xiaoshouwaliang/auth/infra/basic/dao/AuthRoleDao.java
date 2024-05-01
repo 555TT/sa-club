@@ -71,5 +71,7 @@ public interface AuthRoleDao {
     int deleteById(Long id);
 
     AuthRole queryByCondition(AuthRole authRole);
+
+    List<AuthRole> queryByIds(@Param("list") List<Long> roleIds);
 }
 

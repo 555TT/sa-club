@@ -91,6 +91,24 @@ public class SubjectCategoryController {
     }
 
     /**
+     * 一次性查询大分类下所有小分类及小分类下的所有标签
+     * @param
+     * @return
+     */
+    @PostMapping("/queryCategoryAndLabel")
+    public Result<List<SubjectCategoryDTO>> queryCategoryAndLabel(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            Long categoryId = subjectCategoryDTO.getId();
+            Preconditions.checkNotNull(categoryId,"大分类id不能为空");
+            List<SubjectCategoryBO> resultBO= subjectCategoryDomainService.queryCategoryAndLabel(categoryId);
+            List<SubjectCategoryDTO> resultDTO = SubjectCategoryDTOConverter.INSTANCE.converterBOlistToDTOlist(resultBO);
+            return Result.ok(resultDTO);
+        } catch (Exception e) {
+            return Result.fail("查询失败");
+        }
+    }
+
+    /**
      * 根据id更新分类
      * @param subjectCategoryDTO
      * @return

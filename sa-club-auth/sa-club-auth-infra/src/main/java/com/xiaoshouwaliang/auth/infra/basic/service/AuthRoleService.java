@@ -1,6 +1,9 @@
 package com.xiaoshouwaliang.auth.infra.basic.service;
 
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthRole;
+
+import java.util.List;
+
 /**
  * (AuthRole)表服务接口
  *
@@ -48,4 +51,6 @@ public interface AuthRoleService {
      * @return
      */
     AuthRole queryByCondition(AuthRole authRole);
+
+    List<AuthRole> queryByIds(List<Long> roleIds);
 }

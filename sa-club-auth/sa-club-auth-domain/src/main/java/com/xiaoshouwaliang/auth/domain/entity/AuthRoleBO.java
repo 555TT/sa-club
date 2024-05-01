@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * (AuthRole)DTO
+ * (AuthRole)BO
  *
  * @author makejava
  * @since 2024-04-25 15:40:48

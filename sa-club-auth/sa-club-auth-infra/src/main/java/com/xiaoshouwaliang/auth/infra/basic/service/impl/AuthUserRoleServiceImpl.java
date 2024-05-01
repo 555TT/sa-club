@@ -6,6 +6,7 @@ import com.xiaoshouwaliang.auth.infra.basic.service.AuthUserRoleService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 用户角色表(AuthUserRole)表服务实现类
@@ -64,4 +65,11 @@ public class AuthUserRoleServiceImpl implements AuthUserRoleService {
     public boolean deleteById(Long id) {
         return this.authUserRoleDao.deleteById(id) > 0;
     }
+
+    @Override
+    public List<Long> queryByUserId(Long userId) {
+       return authUserRoleDao.queryByUserId(userId);
+    }
+
+
 }

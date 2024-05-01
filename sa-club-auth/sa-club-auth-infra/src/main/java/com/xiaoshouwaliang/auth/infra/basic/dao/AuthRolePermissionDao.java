@@ -1,5 +1,6 @@
 package com.xiaoshouwaliang.auth.infra.basic.dao;
 
+import com.xiaoshouwaliang.auth.infra.basic.entity.AuthPermission;
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthRolePermission;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -77,5 +78,7 @@ public interface AuthRolePermissionDao {
      */
 
     List<AuthRolePermission> queryByCondition(AuthRolePermission authRolePermission);
+
+    List<Long> queryByRoleIds(@Param("roleIds") List<Long> roleIds);
 }
 

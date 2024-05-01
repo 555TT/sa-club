@@ -1,8 +1,8 @@
 package com.xiaoshouwaliang.subject.application.controller.dto;
-
 import lombok.Data;
-
 import java.io.Serializable;
+import java.util.List;
+
 @Data
 public class SubjectCategoryDTO implements Serializable {
 /**
@@ -25,5 +25,14 @@ public class SubjectCategoryDTO implements Serializable {
      * 父级id
      */
     private Long parentId;
+    /**
+     * 分类下的题目数量
+     */
+    private Integer count;
+    /**
+     * 该分类下的标签
+     */
+    List<SubjectLabelDTO> labelDTOList;
 }
+
 

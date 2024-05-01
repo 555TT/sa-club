@@ -1,5 +1,6 @@
 package com.xiaoshouwaliang.auth.domain.service;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.xiaoshouwaliang.auth.domain.entity.AuthUserBO;
 
 /**
@@ -42,5 +43,7 @@ public interface UserInfoDomainService {
      */
     AuthUserBO queryUserInfo(AuthUserBO authUserBO);
 
-    Object login(String validCode);
+    SaTokenInfo login(String validCode);
+
+    void logOut(String userName);
 }

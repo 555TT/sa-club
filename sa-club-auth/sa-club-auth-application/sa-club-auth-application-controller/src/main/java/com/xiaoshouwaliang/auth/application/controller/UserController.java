@@ -18,13 +18,17 @@ import javax.annotation.Resource;
  * @date 2024-04-23
  */
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class UserController {
     @Resource
     private UserInfoDomainService userInfoDomainService;
 
-
-    @RequestMapping("doLogin")
+    /**
+     * 用户登录
+     * @param validCode
+     * @return
+     */
+    @RequestMapping("/doLogin")
     public Result<SaTokenInfo> doLogin(@RequestParam("validCode") String validCode) {
         try {
             Preconditions.checkNotNull(validCode,"验证码不能为空！");
@@ -34,6 +38,21 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户退出
+     * @return
+     */
+
+    @PostMapping("/logOut")
+    public Result<String> logout(@RequestParam String userName){
+        try {
+            Preconditions.checkArgument(!StringUtils.isBlank(userName), "用户名不能为空");
+            userInfoDomainService.logOut(userName);
+            return Result.ok("退出登录成功");
+        } catch (Exception e) {
+            return Result.fail("退出登录失败");
+        }
+    }
     @RequestMapping("isLogin")
     public String isLogin() {
         return "当前会话是否登录：" + StpUtil.isLogin();
@@ -81,7 +100,6 @@ public class UserController {
 
     /**
      * 删除用户
-     *
      * @param authUserDTO
      * @return
      */
@@ -96,6 +114,12 @@ public class UserController {
             return Result.fail(e.getMessage());
         }
     }
+
+    /**
+     * 用户启动禁用
+     * @param authUserDTO
+     * @return
+     */
     @PostMapping("/changeStatus")
     public Result<Boolean> userChangeStatus(@RequestBody AuthUserDTO authUserDTO){
         try {
@@ -108,6 +132,12 @@ public class UserController {
             return Result.fail(e.getMessage());
         }
     }
+
+    /**
+     * 查询用户基本信息
+     * @param authUserDTO
+     * @return
+     */
     @PostMapping("/getUserInfo")
     public Result<AuthUserDTO> getUserInfo(@RequestBody AuthUserDTO authUserDTO){
         try {

@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,3 +29,5 @@ spring:
 publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4+CzbqOUoD85vXwDiXgIV4EvZUbz1FRLVliQPq/5fZPSqZwhjX52c7mM2LPmok/2dsKtrCgbD7sEYKLxG9jJkCAwEAAQ==
 logging:
   config: classpath:log4j2-spring.xml
+server:
+  port: 3010

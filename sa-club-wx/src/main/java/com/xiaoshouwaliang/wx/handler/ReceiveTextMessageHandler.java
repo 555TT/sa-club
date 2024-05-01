@@ -32,11 +32,11 @@ public class ReceiveTextMessageHandler implements WXMessageHandler{
         String receiveContent = map.get("Content");
         if(receiveContent.equals("验证码")){
             long createTime = System.currentTimeMillis();
-//            int random = new Random().nextInt(1000);
-            UUID uuid = UUID.randomUUID();
-            String key="loginKey."+uuid;
+            int random = new Random().nextInt(1000);
+//            UUID uuid = UUID.randomUUID();
+            String key="loginKey."+random;
             redisTemplate.opsForValue().set(key,fromUserName,180, TimeUnit.SECONDS);
-            String content="您的验证码为"+uuid+"。有效期为3分钟！";
+            String content="您的验证码为"+random+"。有效期为3分钟！";
             String xmlContent="<xml><ToUserName><![CDATA["+fromUserName+"]]></ToUserName>\n" +
                     "<FromUserName><![CDATA["+toUserName+"]]></FromUserName>\n" +
                     "<CreateTime>"+ createTime +"</CreateTime>\n" +

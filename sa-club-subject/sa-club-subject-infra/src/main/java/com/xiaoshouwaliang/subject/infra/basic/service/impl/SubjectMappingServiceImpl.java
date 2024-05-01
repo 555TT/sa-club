@@ -75,4 +75,9 @@ public class SubjectMappingServiceImpl implements SubjectMappingService {
     public List<SubjectMapping> queryByCondition(SubjectMapping subjectMapping) {
         return subjectMappingDao.queryByCondition(subjectMapping);
     }
+
+    @Override
+    public Integer querySubjectCountByCategoryId(Long categoryId) {
+        return subjectMappingDao.querySubjectCountByCategoryId(categoryId);
+    }
 }

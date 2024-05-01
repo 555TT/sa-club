@@ -60,4 +60,11 @@ public interface SubjectMappingService {
      */
 
     List<SubjectMapping> queryByCondition(SubjectMapping subjectMapping);
+
+    /**
+     * 查询某分类下的题目数量
+     * @param id
+     * @return
+     */
+    Integer querySubjectCountByCategoryId(Long id);
 }

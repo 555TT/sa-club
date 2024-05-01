@@ -70,5 +70,11 @@ public interface AuthUserRoleDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 根据用户id查询用户所拥有的角色id
+     * @param userId
+     * @return
+     */
+    List<Long> queryByUserId(Long userId);
 }
 

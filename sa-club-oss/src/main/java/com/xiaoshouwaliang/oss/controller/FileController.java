@@ -5,7 +5,9 @@ import com.xiaoshouwaliang.oss.service.FileService;
 import com.xiaoshouwaliang.oss.util.MinioUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,5 +27,9 @@ public class FileController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @PostMapping("/upload")
+    public String upload(MultipartFile uploadFile,String bucket,String objectName){
+        return fileService.uploadFile(uploadFile,bucket,objectName);
     }
 }

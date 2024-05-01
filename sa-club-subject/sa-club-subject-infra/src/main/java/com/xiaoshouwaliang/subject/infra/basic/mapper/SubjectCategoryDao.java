@@ -69,6 +69,11 @@ public interface SubjectCategoryDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 通过条件查数据
+     * @param subjectCategory
+     * @return
+     */
     List<SubjectCategory> queryCategory(SubjectCategory subjectCategory);
 }
 

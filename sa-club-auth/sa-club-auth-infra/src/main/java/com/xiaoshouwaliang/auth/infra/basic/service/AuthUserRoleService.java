@@ -1,6 +1,9 @@
 package com.xiaoshouwaliang.auth.infra.basic.service;
 
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthUserRole;
+
+import java.util.List;
+
 /**
  * 用户角色表(AuthUserRole)表服务接口
  *
@@ -41,5 +44,13 @@ public interface AuthUserRoleService {
      * @return 是否成功
      */
     boolean deleteById(Long id);
+
+    /**
+     * 根据用户id查询用户所拥有的角色id
+     * @param userId
+     * @return
+     */
+    List<Long> queryByUserId(Long userId);
+
 
 }

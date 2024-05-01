@@ -13,6 +13,7 @@ import com.xiaoshouwaliang.auth.domain.service.UserInfoDomainService;
 import com.xiaoshouwaliang.auth.infra.basic.entity.*;
 import com.xiaoshouwaliang.auth.infra.basic.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
         //插入用户基本信息表
         authUser.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
         authUser.setStatus(0);//用户启用禁用状态 0启用1禁用
-        if(authUser.getPassword()!=null){
+        if (authUser.getPassword() != null) {
             authUser.setPassword(SaSecureUtil.aesEncrypt(key, authUser.getPassword()));//采用AEC对称加密算法密码加密
         }
 /*        if(log.isInfoEnabled()){
@@ -81,9 +82,9 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
         String redisRoleKey = redisUtil.buildKey(authRolePrefix, authUser.getUserName());
         ArrayList<String> strings = new ArrayList<>();
         strings.add(AuthConstant.NORMAL_USER);
-        redisUtil.set(redisRoleKey, JSON.toJSONString(strings, true));
+        redisUtil.set(redisRoleKey, JSON.toJSONString(strings,true));
         String redisPermissionKey = redisUtil.buildKey(authPermissionPrefix, authUser.getUserName());
-        //根据role_id查permission_id
+             //根据role_id查permission_id
         AuthRolePermission authRolePermission = new AuthRolePermission();
         authRolePermission.setRoleId(roleId);
         List<AuthRolePermission> rolePermissions = authRolePermissionService.queryByCondition(authRolePermission);
@@ -91,7 +92,7 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
             List<Long> permissionIds = rolePermissions.stream().map(AuthRolePermission::getPermissionId).collect(Collectors.toList());
             List<AuthPermission> permissions = authPermissionService.queryByIds(permissionIds);
             List<String> permissionKeys = permissions.stream().map(AuthPermission::getPermissionKey).collect(Collectors.toList());
-            redisUtil.set(redisPermissionKey, JSON.toJSONString(permissionKeys, true));
+            redisUtil.set(redisPermissionKey, JSON.toJSONString(permissionKeys,true));
         }
         return true;
     }
@@ -125,15 +126,40 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
     @Override
     public SaTokenInfo login(String validCode) {
         String openId = redisUtil.get("loginKey." + validCode);
-        if(openId==null){
+        if (openId == null || StringUtils.isBlank(openId)) {
             return null;
         }
         AuthUserBO authUserBO = new AuthUserBO();
         authUserBO.setUserName(openId);
         addUser(authUserBO);
+        redisUtil.del("loginKey." + validCode);
+        /*//将用户的角色信息和权限信息写入redis
+        AuthUser authUser = new AuthUser();
+        authUser.setUserName(openId);
+        AuthUser authUserResult = authUserService.queryByUserName(authUser);
+        List<Long> roleIds = authUserRoleService.queryByUserId(authUserResult.getId());
+        List<AuthRole> authRoles = authRoleService.queryByIds(roleIds);
+        List<String> roleKeys = authRoles.stream().map(AuthRole::getRoleKey).collect(Collectors.toList());
+        String redisRoleKey = redisUtil.buildKey(authRolePrefix, openId);
+        redisUtil.set(redisRoleKey, JSON.toJSONString(roleKeys));
+        List<Long> permissionIds = authRolePermissionService.queryByRoleIds(roleIds);
+        List<AuthPermission> permissions = authPermissionService.queryByIds(permissionIds);
+        List<String> permissionKeys = permissions.stream().map(AuthPermission::getPermissionKey).collect(Collectors.toList());
+        String redisPermissionKey = redisUtil.buildKey(authPermissionPrefix, openId);
+        redisUtil.set(redisPermissionKey, JSON.toJSONString(permissionKeys));*/
+        //登录
         StpUtil.login(openId);
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-        redisUtil.del("loginKey." + validCode);
         return tokenInfo;
+
+    }
+
+    @Override
+    public void logOut(String userName) {
+        String redisRoleKey = redisUtil.buildKey(authRolePrefix, userName);
+        String redisPermissionKey = redisUtil.buildKey(authPermissionPrefix, userName);
+        redisUtil.del(redisPermissionKey);
+        redisUtil.del(redisRoleKey);
+        StpUtil.logout(userName);
     }
 }

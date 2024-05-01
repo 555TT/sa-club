@@ -82,6 +82,12 @@ id, role_id, permission_id, created_by, created_time, update_by, update_time, is
             </if>
         </where>
     </select>
+    <select id="queryByRoleIds" resultType="java.lang.Long">
+        select permission_id from auth_role_permission where role_id in
+            <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+                #{roleId}
+            </foreach>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

@@ -27,12 +27,14 @@ public interface SubjectCategoryDomainService {
      * @param subjectCategoryBO
      * @return
      */
-    /**
-     * 更新分类
-     * @param subjectCategoryBO
-     * @return
-     */
     Boolean updateCategory(SubjectCategoryBO subjectCategoryBO);
 
     Boolean deleteCategory(SubjectCategoryBO subjectCategoryBO);
+
+    /**
+     * 一次性查询大分类下所有小分类及小分类下的所有标签
+     * @param categoryId
+     * @return
+     */
+    List<SubjectCategoryBO> queryCategoryAndLabel(Long categoryId);
 }

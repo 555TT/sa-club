@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpInterface;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.gateway.redis.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.List;
  * @date 2024-04-24
  */
 @Component
+@Slf4j
 public class StpInterfaceImpl implements StpInterface {
     @Resource
     private RedisUtil redisUtil;
@@ -39,6 +41,8 @@ public class StpInterfaceImpl implements StpInterface {
         if(StringUtils.isBlank(value)){
             return Collections.emptyList();
         }
-       return JSON.parseObject(value,List.class);
+        List list = JSON.parseObject(value, List.class);
+        log.info(list.toString());
+        return list;
     }
 }

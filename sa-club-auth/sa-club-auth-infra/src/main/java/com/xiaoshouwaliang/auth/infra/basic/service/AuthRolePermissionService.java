@@ -1,5 +1,6 @@
 package com.xiaoshouwaliang.auth.infra.basic.service;
 
+import com.xiaoshouwaliang.auth.infra.basic.entity.AuthPermission;
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthRolePermission;
 
 import java.util.List;
@@ -58,4 +59,11 @@ public interface AuthRolePermissionService {
      */
 
     List<AuthRolePermission> queryByCondition(AuthRolePermission authRolePermission);
+
+    /**
+     * 根据角色查询权限
+     * @param roleIds
+     * @return
+     */
+    List<Long> queryByRoleIds(List<Long> roleIds);
 }

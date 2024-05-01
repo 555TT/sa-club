@@ -13,12 +13,10 @@ import com.xiaoshouwaliang.auth.domain.service.PermissionInfoDomainService;
 import com.xiaoshouwaliang.auth.domain.service.RoleInfoDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 小手WA凉
@@ -81,6 +79,16 @@ public class PermissionController {
             return Result.ok(result);
         } catch (Exception e) {
             return Result.fail("删除权限失败："+e.getMessage());
+        }
+    }
+    @GetMapping("/getPermission")
+    public Result<List<String>> getPermission(String userName){
+        try {
+            Preconditions.checkArgument(!StringUtils.isBlank(userName),"用户名不能为空");
+             List<String> permissions=permissionInfoDomainService.queryPermission(userName);
+             return Result.ok(permissions);
+        } catch (Exception e) {
+            return Result.fail("获取权限失败："+e.getMessage());
         }
     }
 

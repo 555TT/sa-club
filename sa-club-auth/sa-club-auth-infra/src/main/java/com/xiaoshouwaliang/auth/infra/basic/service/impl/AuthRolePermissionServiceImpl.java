@@ -1,5 +1,6 @@
 package com.xiaoshouwaliang.auth.infra.basic.service.impl;
 
+import com.xiaoshouwaliang.auth.infra.basic.entity.AuthPermission;
 import com.xiaoshouwaliang.auth.infra.basic.entity.AuthRolePermission;
 import com.xiaoshouwaliang.auth.infra.basic.dao.AuthRolePermissionDao;
 import com.xiaoshouwaliang.auth.infra.basic.service.AuthRolePermissionService;
@@ -72,5 +73,10 @@ public class AuthRolePermissionServiceImpl implements AuthRolePermissionService 
     @Override
     public List<AuthRolePermission> queryByCondition(AuthRolePermission authRolePermission) {
         return authRolePermissionDao.queryByCondition(authRolePermission);
+    }
+
+    @Override
+    public List<Long> queryByRoleIds(List<Long> roleIds) {
+        return authRolePermissionDao.queryByRoleIds(roleIds);
     }
 }
