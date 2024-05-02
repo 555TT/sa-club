@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class ThreadPoolConfig {
     @Bean(name = "labelThreadPool")
     public ThreadPoolExecutor getThreadPool(){
-        return new ThreadPoolExecutor(10,40,5, TimeUnit.SECONDS,
-                new LinkedBlockingDeque<>(40),new CustomizableThreadFactory("label"),
+        return new ThreadPoolExecutor(6,20,5, TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(40),new CustomNameThreadFactory("label"),
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 }
