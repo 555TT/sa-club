@@ -46,6 +46,6 @@ public class SubjectCategoryBO implements Serializable {
     /**
      * 该分类下的标签
      */
-    List<SubjectLabelBO> labelDTOList;
+    List<SubjectLabelBO> labelBOList;
 }
 
