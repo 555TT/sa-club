@@ -14,16 +14,15 @@ import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 小手WA凉
@@ -96,19 +95,17 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
         List<SubjectCategory> categoryList = subjectCategoryService.queryCategory(subjectCategory);
         //将属于每个小分类的所有标签组装到小分类中
         List<SubjectCategoryBO> subjectCategoryBOS = SubjectCategoryConverter.INSTANCE.converterPOListToBOList(categoryList);
-        List<FutureTask<Map<Long, List<SubjectLabelBO>>>> futureTaskList = new ArrayList<>();
-        subjectCategoryBOS.forEach(category -> {
-            FutureTask<Map<Long, List<SubjectLabelBO>>> futureTask = new FutureTask<>(() ->
-                    getLabelsForCategory(category));
-            labelThreadPool.submit(futureTask);
-            futureTaskList.add(futureTask);
-        });
+        List<CompletableFuture<Map<Long, List<SubjectLabelBO>>>> completableFutureList = subjectCategoryBOS.stream().map(category ->
+                CompletableFuture.supplyAsync(() ->
+                                getLabelsForCategory(category)
+                        , labelThreadPool)).collect(Collectors.toList());
         Map<Long,List<SubjectLabelBO>> map=new HashMap<>();
-        futureTaskList.forEach(futureTask -> {
-
+        completableFutureList.forEach(completableFuture -> {
             try {
-                Map<Long, List<SubjectLabelBO>> longListMap = futureTask.get();
-                map.putAll(longListMap);
+                Map<Long, List<SubjectLabelBO>> longListMap = completableFuture.get();
+                if(!CollectionUtils.isEmpty(longListMap)){
+                    map.putAll(longListMap);
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -117,7 +114,9 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
 
         });
         subjectCategoryBOS.forEach(subjectCategoryBO -> {
-            subjectCategoryBO.setLabelBOList(map.get(subjectCategoryBO.getId()));
+            if (!CollectionUtils.isEmpty(map.get(subjectCategoryBO.getId()))) {
+                subjectCategoryBO.setLabelBOList(map.get(subjectCategoryBO.getId()));
+            }
         });
         return subjectCategoryBOS;
     }
