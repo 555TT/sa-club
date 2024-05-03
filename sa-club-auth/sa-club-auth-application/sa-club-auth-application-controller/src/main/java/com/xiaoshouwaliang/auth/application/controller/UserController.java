@@ -8,6 +8,7 @@ import com.xiaoshouwaliang.auth.application.controller.dto.AuthUserDTO;
 import com.xiaoshouwaliang.auth.common.entity.Result;
 import com.xiaoshouwaliang.auth.domain.entity.AuthUserBO;
 import com.xiaoshouwaliang.auth.domain.service.UserInfoDomainService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
     @Resource
     private UserInfoDomainService userInfoDomainService;
@@ -34,6 +36,7 @@ public class UserController {
             Preconditions.checkNotNull(validCode,"验证码不能为空！");
             return Result.ok(userInfoDomainService.login(validCode));
         } catch (Exception e) {
+            log.error("UserController.doLogin.error:{}",e.getMessage(),e);
             return Result.fail("登录失败");
         }
     }
@@ -50,6 +53,7 @@ public class UserController {
             userInfoDomainService.logOut(userName);
             return Result.ok("退出登录成功");
         } catch (Exception e) {
+            log.error("UserController.logout.error:{}",e.getMessage(),e);
             return Result.fail("退出登录失败");
         }
     }
@@ -75,9 +79,8 @@ public class UserController {
             else
                 return Result.fail("该用户名已存在");
         } catch (Exception e) {
-            e.getMessage();
-            e.getStackTrace();
-            return Result.fail("注册用户失败："+e.getMessage());
+            log.error("UserController.userRegister.error:{}",e.getMessage(),e);
+            return Result.fail("注册用户失败");
         }
     }
 
@@ -94,7 +97,8 @@ public class UserController {
             userInfoDomainService.updateUser(authUserBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("UserController.userUpdate.error:{}",e.getMessage(),e);
+            return Result.fail("更新用户信息失败");
         }
     }
 
@@ -111,6 +115,7 @@ public class UserController {
             userInfoDomainService.deleteUser(authUserBO);
             return Result.ok(true);
         } catch (Exception e) {
+            log.error("UserController.userDelete.error:{}",e.getMessage(),e);
             return Result.fail(e.getMessage());
         }
     }
@@ -129,6 +134,7 @@ public class UserController {
             userInfoDomainService.changeUserStatus(authUserBO);
             return Result.ok(true);
         } catch (Exception e) {
+            log.error("UserController.userChangeStatus.error:{}",e.getMessage(),e);
             return Result.fail(e.getMessage());
         }
     }
@@ -147,6 +153,7 @@ public class UserController {
             AuthUserDTO resultDTO = AuthUserDTOConverter.INSTANCE.authUserBOtoDTO(resultBO);
             return Result.ok(resultDTO);
         } catch (Exception e) {
+            log.error("UserController.getUserInfo.error:{}",e.getMessage(),e);
             return Result.fail(e.getMessage());
         }
     }

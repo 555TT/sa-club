@@ -38,11 +38,11 @@ public class SubjectCategoryController {
             if(log.isInfoEnabled()){
                 log.info("SubjectCategoryController.add.BO:{}", JSON.toJSONString(subjectCategoryBO));
             }
-
             subjectCategoryDomainService.add(subjectCategoryBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.add.error:{}",e.getMessage(),e);
+            return Result.fail("新增题目分类失败");
         }
     }
 
@@ -64,7 +64,8 @@ public class SubjectCategoryController {
             List<SubjectCategoryDTO> subjectCategoryDTOS = SubjectCategoryDTOConverter.INSTANCE.converterBOlistToDTOlist(listBo);
             return Result.ok(subjectCategoryDTOS);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.queryPrimaryCategory.error:{}",e.getMessage(),e);
+            return Result.fail("查询大分类失败");
         }
     }
 
@@ -86,7 +87,8 @@ public class SubjectCategoryController {
             List<SubjectCategoryDTO> subjectCategoryDTOS = SubjectCategoryDTOConverter.INSTANCE.converterBOlistToDTOlist(listBo);
             return Result.ok(subjectCategoryDTOS);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.queryCategory.error:{}",e.getMessage(),e);
+            return Result.fail("根据一级分类查询二级分类失败");
         }
     }
 
@@ -105,7 +107,8 @@ public class SubjectCategoryController {
             List<SubjectCategoryDTO> resultDTO = SubjectCategoryDTOConverter.INSTANCE.converterBOlistToDTOlist(resultBO);
             return Result.ok(resultDTO);
         } catch (Exception e) {
-            return Result.fail("查询失败");
+            log.error("SubjectCategoryController.queryCategoryAndLabel.error:{}",e.getMessage(),e);
+            return Result.fail("一次性查询大分类下所有小分类及小分类下的所有标签失败");
         }
     }
 
@@ -122,11 +125,11 @@ public class SubjectCategoryController {
                 log.info("SubjectCategoryController.queryPrimaryCategory.DTO:{}", JSON.toJSONString(subjectCategoryDTO));
             }
             SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.converterDtoToCategoryBO(subjectCategoryDTO);
-
             Boolean result= subjectCategoryDomainService.updateCategory(subjectCategoryBO);
             return Result.ok(result);
         } catch (Exception e) {
-           return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.update.error:{}",e.getMessage(),e);
+           return Result.fail("更新分类失败");
         }
     }
 
@@ -146,7 +149,8 @@ public class SubjectCategoryController {
             Boolean result= subjectCategoryDomainService.deleteCategory(subjectCategoryBO);
             return Result.ok(result);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.delete.error:{}",e.getMessage(),e);
+            return Result.fail("删除分类失败");
         }
     }
 }

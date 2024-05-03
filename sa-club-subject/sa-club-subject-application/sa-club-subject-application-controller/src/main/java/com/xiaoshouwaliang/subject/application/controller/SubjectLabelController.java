@@ -46,7 +46,8 @@ public class SubjectLabelController {
             subjectLabelDomainService.addLabel(subjectLabelBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectLabelController.add.error:{}",e.getMessage(),e);
+            return Result.fail("新增标签失败");
         }
     }
 
@@ -66,7 +67,8 @@ public class SubjectLabelController {
             boolean b = subjectLabelDomainService.updateLabel(subjectLabelBO);
             return Result.ok(b);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.update.error:{}",e.getMessage(),e);
+            return Result.fail("更新标签失败");
         }
     }
 
@@ -86,7 +88,8 @@ public class SubjectLabelController {
             boolean b = subjectLabelDomainService.deleteLabel(subjectLabelBO);
             return Result.ok(b);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.delete.error:{}",e.getMessage(),e);
+            return Result.fail("删除标签失败");
         }
     }
 
@@ -95,7 +98,6 @@ public class SubjectLabelController {
      * @param subjectLabelDTO
      * @return
      */
-    //TODO 改成通过题目信息的关联表去查
     @PostMapping("/queryLabelByCategoryId")
     public Result<List<SubjectLabelDTO>> queryByCategoryId(@RequestBody SubjectLabelDTO subjectLabelDTO){
         if(log.isInfoEnabled()){
@@ -108,7 +110,8 @@ public class SubjectLabelController {
             List<SubjectLabelDTO> subjectLabelDTOS = SubjectLabelDTOConverter.INSTANCE.converterBOlistToDTOlist(listB0);
             return Result.ok(subjectLabelDTOS);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.queryByCategoryId.error:{}",e.getMessage(),e);
+            return Result.fail("查询某分类所以标签失败");
         }
     }
 }

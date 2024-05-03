@@ -51,7 +51,8 @@ public class SubjectController {
             subjectInfoDomainService.addSubject(subjectInfoBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectController.add.error:{}",e.getMessage(),e);
+            return Result.fail("新增题目失败");
         }
     }
 
@@ -72,9 +73,16 @@ public class SubjectController {
             PageResult<SubjectInfoBO> resultBO= subjectInfoDomainService.querySubjectPage(subjectInfoBO);
             return Result.ok(resultBO);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.getSubjectPage.error:{}",e.getMessage(),e);
+            return Result.fail("查询题目列表失败");
         }
     }
+
+    /**
+     * 查询题目详细信息
+     * @param subjectInfoDTO
+     * @return
+     */
     @PostMapping("/querySubjectInfo")
     public Result<SubjectInfoDTO> getSubjectInfo(@RequestBody SubjectInfoDTO subjectInfoDTO){
         try {
@@ -87,7 +95,8 @@ public class SubjectController {
             SubjectInfoDTO resultDTO = SubjectInfoDTOConverter.INSTANCE.converterBOToSubjectDTO(resultBO);
             return Result.ok(resultDTO);
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            log.error("SubjectCategoryController.getSubjectInfo.error:{}",e.getMessage(),e);
+            return Result.fail("查询题目详细信息失败");
         }
     }
 }

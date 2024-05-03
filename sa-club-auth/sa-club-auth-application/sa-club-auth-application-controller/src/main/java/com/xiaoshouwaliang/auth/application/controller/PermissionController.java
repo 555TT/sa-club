@@ -48,9 +48,8 @@ public class PermissionController {
             permissionInfoDomainService.addPermission(authPermissionBO);
             return Result.ok(true);
         } catch (Exception e) {
-            e.printStackTrace();
-            e.getMessage();
-            return Result.fail("新增权限失败："+e.getMessage());
+            log.error("PermissionController.addPermission.error:{}",e.getMessage(),e);
+            return Result.fail("新增权限失败");
         }
     }
     @PostMapping("/update")
@@ -64,7 +63,8 @@ public class PermissionController {
             boolean result =permissionInfoDomainService.updatePermission(authPermissionBO);
             return Result.ok(result);
         } catch (Exception e) {
-            return Result.fail("更新权限失败："+e.getMessage());
+            log.error("RoleController.updatePermission.error:{}",e.getMessage(),e);
+            return Result.fail("更新权限失败");
         }
     }
     @PostMapping("/delete")
@@ -78,7 +78,8 @@ public class PermissionController {
             boolean result= permissionInfoDomainService.deletePermission(authPermissionBO);
             return Result.ok(result);
         } catch (Exception e) {
-            return Result.fail("删除权限失败："+e.getMessage());
+            log.error("RoleController.deletePermission.error:{}",e.getMessage(),e);
+            return Result.fail("删除权限失败");
         }
     }
     @GetMapping("/getPermission")
@@ -88,7 +89,8 @@ public class PermissionController {
              List<String> permissions=permissionInfoDomainService.queryPermission(userName);
              return Result.ok(permissions);
         } catch (Exception e) {
-            return Result.fail("获取权限失败："+e.getMessage());
+            log.error("RoleController.getPermission.error:{}",e.getMessage(),e);
+            return Result.fail("获取权限失败");
         }
     }
 

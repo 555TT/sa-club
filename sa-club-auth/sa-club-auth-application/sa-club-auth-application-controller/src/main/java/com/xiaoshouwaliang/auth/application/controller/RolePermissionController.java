@@ -39,7 +39,8 @@ public class RolePermissionController {
             authRolePermissionDomainService.addRolePermission(authRolePermissionBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail("添加角色权限关联失败："+e.getMessage());
+            log.error("RolePermissionController.RolePermissionController.error:{}",e.getMessage(),e);
+            return Result.fail("添加角色权限关联失败");
         }
     }
 }

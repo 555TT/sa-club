@@ -43,7 +43,8 @@ public class RoleController {
             roleInfoDomainService.addRole(authRoleBO);
             return Result.ok(true);
         } catch (Exception e) {
-            return Result.fail("新增角色失败："+e.getMessage());
+            log.error("RoleController.addRole.error:{}",e.getMessage(),e);
+            return Result.fail("新增角色失败");
         }
     }
 
@@ -62,7 +63,8 @@ public class RoleController {
             AuthRoleBO authRoleBO = AuthRoleDTOConverter.INSTANCE.authRoleDTOtoBO(authRoleDTO);
             return Result.ok(roleInfoDomainService.updateRole(authRoleBO));
         } catch (Exception e) {
-            return Result.fail("更新角色失败："+e.getMessage());
+            log.error("RoleController.updateRole.error:{}",e.getMessage(),e);
+            return Result.fail("更新角色失败");
         }
     }
 
@@ -81,7 +83,8 @@ public class RoleController {
             AuthRoleBO authRoleBO = AuthRoleDTOConverter.INSTANCE.authRoleDTOtoBO(authRoleDTO);
             return Result.ok(roleInfoDomainService.deleteRole(authRoleBO));
         } catch (Exception e) {
-            return Result.fail("删除角色失败："+e.getMessage());
+            log.error("RoleController.deleteRole.error:{}",e.getMessage(),e);
+            return Result.fail("删除角色失败");
         }
     }
 }
