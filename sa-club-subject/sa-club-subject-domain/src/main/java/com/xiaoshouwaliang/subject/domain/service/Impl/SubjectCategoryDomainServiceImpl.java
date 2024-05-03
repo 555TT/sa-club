@@ -7,6 +7,7 @@ import com.xiaoshouwaliang.subject.domain.converter.SubjectLabelConverter;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectCategoryBO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectLabelBO;
 import com.xiaoshouwaliang.subject.domain.service.SubjectCategoryDomainService;
+import com.xiaoshouwaliang.subject.domain.util.CacheUtil;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectCategory;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLabel;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectCategoryService;
@@ -39,6 +40,8 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
     private SubjectLabelService subjectLabelService;
     @Resource
     private ThreadPoolExecutor labelThreadPool;
+    @Resource
+    private CacheUtil cacheUtil;
 
     @Override
     public void add(SubjectCategoryBO subjectCategoryBO) {
@@ -92,6 +95,12 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
         SubjectCategory subjectCategory = new SubjectCategory();
         subjectCategory.setParentId(categoryId);
         subjectCategory.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
+        String cacheKey="categoryAndLabel."+categoryId;
+        List<SubjectCategoryBO> result = cacheUtil.getResult(cacheKey, SubjectCategoryBO.class, key -> getSubjectCategoryBOS(subjectCategory));
+        return result;
+    }
+
+    private List<SubjectCategoryBO> getSubjectCategoryBOS(SubjectCategory subjectCategory) {
         List<SubjectCategory> categoryList = subjectCategoryService.queryCategory(subjectCategory);
         //将属于每个小分类的所有标签组装到小分类中
         List<SubjectCategoryBO> subjectCategoryBOS = SubjectCategoryConverter.INSTANCE.converterPOListToBOList(categoryList);
