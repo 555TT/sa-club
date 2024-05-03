@@ -126,7 +126,7 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
     @Override
     public SaTokenInfo login(String validCode) {
         String openId = redisUtil.get("loginKey." + validCode);
-        if (openId == null || StringUtils.isBlank(openId)) {
+        if (StringUtils.isBlank(openId)) {
             return null;
         }
         AuthUserBO authUserBO = new AuthUserBO();

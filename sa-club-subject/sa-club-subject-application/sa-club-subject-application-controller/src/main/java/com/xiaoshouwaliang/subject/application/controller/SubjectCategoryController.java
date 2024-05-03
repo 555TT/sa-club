@@ -98,6 +98,7 @@ public class SubjectCategoryController {
     @PostMapping("/queryCategoryAndLabel")
     public Result<List<SubjectCategoryDTO>> queryCategoryAndLabel(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
         try {
+//            String loginId = request.getHeader("loginId");
             Long categoryId = subjectCategoryDTO.getId();
             Preconditions.checkNotNull(categoryId,"大分类id不能为空");
             List<SubjectCategoryBO> resultBO= subjectCategoryDomainService.queryCategoryAndLabel(categoryId);
