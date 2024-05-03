@@ -1,6 +1,5 @@
-package com.xiaoshouwaliang.auth.common.entity;
+package com.xiaoshouwaliang.auth.api.entity;
 
-import com.xiaoshouwaliang.auth.common.enums.ResultCodeEnum;
 import lombok.Data;
 
 /**

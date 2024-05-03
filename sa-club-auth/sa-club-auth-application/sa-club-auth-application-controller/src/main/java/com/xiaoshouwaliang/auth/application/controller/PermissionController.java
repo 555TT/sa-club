@@ -2,15 +2,11 @@ package com.xiaoshouwaliang.auth.application.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
+import com.xiaoshouwaliang.auth.api.entity.Result;
 import com.xiaoshouwaliang.auth.application.controller.converter.AuthPermissionDTOConverter;
-import com.xiaoshouwaliang.auth.application.controller.converter.AuthRoleDTOConverter;
 import com.xiaoshouwaliang.auth.application.controller.dto.AuthPermissionDTO;
-import com.xiaoshouwaliang.auth.application.controller.dto.AuthRoleDTO;
-import com.xiaoshouwaliang.auth.common.entity.Result;
 import com.xiaoshouwaliang.auth.domain.entity.AuthPermissionBO;
-import com.xiaoshouwaliang.auth.domain.entity.AuthRoleBO;
 import com.xiaoshouwaliang.auth.domain.service.PermissionInfoDomainService;
-import com.xiaoshouwaliang.auth.domain.service.RoleInfoDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;

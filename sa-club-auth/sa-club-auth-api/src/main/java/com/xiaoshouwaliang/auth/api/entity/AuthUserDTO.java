@@ -1,4 +1,4 @@
-package com.xiaoshouwaliang.auth.application.controller.dto;
+package com.xiaoshouwaliang.auth.api.entity;
 
 import lombok.Data;
 

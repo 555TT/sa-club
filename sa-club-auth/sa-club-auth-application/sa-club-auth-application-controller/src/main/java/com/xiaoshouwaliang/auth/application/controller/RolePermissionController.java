@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
 import com.xiaoshouwaliang.auth.application.controller.converter.AuthRolePermissionDTOConverter;
 import com.xiaoshouwaliang.auth.application.controller.dto.AuthRolePermissionDTO;
-import com.xiaoshouwaliang.auth.common.entity.Result;
+import com.xiaoshouwaliang.auth.api.entity.Result;
 import com.xiaoshouwaliang.auth.domain.entity.AuthRolePermissionBO;
 import com.xiaoshouwaliang.auth.domain.service.AuthRolePermissionDomainService;
 import lombok.extern.slf4j.Slf4j;

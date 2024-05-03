@@ -1,6 +1,6 @@
 package com.xiaoshouwaliang.auth.application.controller.converter;
 
-import com.xiaoshouwaliang.auth.application.controller.dto.AuthUserDTO;
+import com.xiaoshouwaliang.auth.api.entity.AuthUserDTO;
 import com.xiaoshouwaliang.auth.domain.entity.AuthUserBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

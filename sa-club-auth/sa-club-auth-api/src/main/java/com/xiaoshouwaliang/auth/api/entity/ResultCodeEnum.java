@@ -1,4 +1,4 @@
-package com.xiaoshouwaliang.auth.common.enums;
+package com.xiaoshouwaliang.auth.api.entity;
 
 import lombok.Getter;
 
