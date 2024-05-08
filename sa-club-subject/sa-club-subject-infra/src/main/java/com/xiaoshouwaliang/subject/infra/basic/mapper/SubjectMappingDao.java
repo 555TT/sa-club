@@ -74,9 +74,7 @@ public interface SubjectMappingDao {
 
     /**
      * 根据分类id查询该分类下的所有题目数量
-     * @param categoryId
-     * @return
      */
-    Integer querySubjectCountByCategoryId(Long categoryId);
+    Integer querySubjectCount(Long categoryId);
 }
 

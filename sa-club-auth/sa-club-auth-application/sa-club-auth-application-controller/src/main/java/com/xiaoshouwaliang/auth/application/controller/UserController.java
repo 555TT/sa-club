@@ -34,7 +34,11 @@ public class UserController {
     public Result<SaTokenInfo> doLogin(@RequestParam("validCode") String validCode) {
         try {
             Preconditions.checkNotNull(validCode,"验证码不能为空！");
-            return Result.ok(userInfoDomainService.login(validCode));
+            SaTokenInfo login = userInfoDomainService.login(validCode);
+            if(login==null){
+                return Result.fail();
+            }
+            return Result.ok(login);
         } catch (Exception e) {
             log.error("UserController.doLogin.error:{}",e.getMessage(),e);
             return Result.fail("登录失败");
@@ -46,7 +50,7 @@ public class UserController {
      * @return
      */
 
-    @PostMapping("/logOut")
+    @GetMapping("/logOut")
     public Result<String> logout(@RequestParam String userName){
         try {
             Preconditions.checkArgument(!StringUtils.isBlank(userName), "用户名不能为空");
@@ -74,7 +78,7 @@ public class UserController {
             Preconditions.checkArgument(!StringUtils.isBlank(authUserDTO.getUserName()),"用户名不能为空");
             AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.authUserDTOtoBO(authUserDTO);
             boolean result = userInfoDomainService.addUser(authUserBO);
-            if(result==true)
+            if(result)
             return Result.ok(true);
             else
                 return Result.fail("该用户名已存在");

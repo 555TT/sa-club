@@ -43,8 +43,8 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
     @Resource
     private RedisUtil redisUtil;
 
-    private String authPermissionPrefix = "auth.permission";
-    private String authRolePrefix = "auth.role";
+    private final String  authPermissionPrefix = "auth.permission";
+    private final String authRolePrefix = "auth.role";
 
     @Value("${AES.key}")
     private String key;//对称加密key
@@ -67,6 +67,9 @@ public class UserInfoDomainServiceImpl implements UserInfoDomainService {
 /*        if(log.isInfoEnabled()){
             log.info("解密后密码：{}",SaSecureUtil.aesDecrypt(key,authUser.getPassword()));
         }*/
+        if(StringUtils.isBlank(authUser.getAvatar())){
+            authUser.setAvatar("http://182.92.85.80:9000/shangan/icon/touxiang.jpg");
+        }
         authUserService.insert(authUser);
         //建立初步的用户角色关联（插入用户角色表）
         AuthRole authRole = new AuthRole();

@@ -77,7 +77,7 @@ public class SubjectMappingServiceImpl implements SubjectMappingService {
     }
 
     @Override
-    public Integer querySubjectCountByCategoryId(Long categoryId) {
-        return subjectMappingDao.querySubjectCountByCategoryId(categoryId);
+    public Integer querySubjectCount(Long categoryId) {
+        return subjectMappingDao.querySubjectCount(categoryId);
     }
 }

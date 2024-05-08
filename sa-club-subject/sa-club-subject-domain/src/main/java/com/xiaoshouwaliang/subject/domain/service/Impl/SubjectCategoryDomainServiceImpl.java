@@ -10,15 +10,14 @@ import com.xiaoshouwaliang.subject.domain.service.SubjectCategoryDomainService;
 import com.xiaoshouwaliang.subject.domain.util.CacheUtil;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectCategory;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLabel;
+import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectMapping;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectCategoryService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
         List<SubjectCategory> categoryList = subjectCategoryService.queryCategory(subjectCategory);
         List<SubjectCategoryBO> subjectCategoryBOS = SubjectCategoryConverter.INSTANCE.converterPOListToBOList(categoryList);
         subjectCategoryBOS.forEach(bo -> {
-            Integer count = subjectMappingService.querySubjectCountByCategoryId(bo.getId());
+            Integer count = subjectMappingService.querySubjectCount(bo.getId());
             bo.setCount(count);
         });
         return subjectCategoryBOS;
@@ -108,6 +107,7 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
                 CompletableFuture.supplyAsync(() ->
                                 getLabelsForCategory(category)
                         , labelThreadPool)).collect(Collectors.toList());
+        //装着categoryId和List<SubjectLabelBO>的map
         Map<Long,List<SubjectLabelBO>> map=new HashMap<>();
         completableFutureList.forEach(completableFuture -> {
             try {
@@ -115,26 +115,36 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
                 if(!CollectionUtils.isEmpty(longListMap)){
                     map.putAll(longListMap);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
 
         });
         subjectCategoryBOS.forEach(subjectCategoryBO -> {
-            if (!CollectionUtils.isEmpty(map.get(subjectCategoryBO.getId()))) {
-                subjectCategoryBO.setLabelBOList(map.get(subjectCategoryBO.getId()));
+            List<SubjectLabelBO> list = map.get(subjectCategoryBO.getId());
+            if (!CollectionUtils.isEmpty(list)){
+                subjectCategoryBO.setLabelBOList(list);
             }
         });
         return subjectCategoryBOS;
     }
 
+    /**
+     *
+     * @param categoryBO
+     * @return Map<分类id，该分类下的所有标签>
+     */
+
     private Map<Long, List<SubjectLabelBO>> getLabelsForCategory(SubjectCategoryBO categoryBO) {
+        //先在mapping中查到labelId，在到label表中根据id查到labelName
         Map<Long, List<SubjectLabelBO>> map=new HashMap<>();
-        SubjectLabel subjectLabel = new SubjectLabel();
-        subjectLabel.setCategoryId(categoryBO.getId());
-        List<SubjectLabel> subjectLabels = subjectLabelService.queryByCategoryId(subjectLabel);
+        SubjectMapping subjectMapping = new SubjectMapping();
+        subjectMapping.setCategoryId(categoryBO.getId());
+        subjectMapping.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
+        List<SubjectMapping> subjectMappings = subjectMappingService.queryByCondition(subjectMapping);
+        if(CollectionUtils.isEmpty(subjectMappings))
+            return map;
+        List<SubjectLabel> subjectLabels = subjectLabelService.batchQueryByIds(subjectMappings.stream().map(SubjectMapping::getLabelId).collect(Collectors.toList()));
         List<SubjectLabelBO> list = SubjectLabelConverter.INSTANCE.converterPOListToBOList(subjectLabels);
         map.put(categoryBO.getId(),list);
         return map;

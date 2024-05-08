@@ -1,8 +1,5 @@
 package com.xiaoshouwaliang.subject.application.controller.converter;
-
-import com.xiaoshouwaliang.subject.application.controller.dto.SubjectCategoryDTO;
 import com.xiaoshouwaliang.subject.application.controller.dto.SubjectLabelDTO;
-import com.xiaoshouwaliang.subject.domain.entity.SubjectCategoryBO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectLabelBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -18,4 +15,5 @@ public interface SubjectLabelDTOConverter {
     SubjectLabelDTOConverter INSTANCE=Mappers.getMapper(SubjectLabelDTOConverter.class);
     SubjectLabelBO converterDtoToLabelBO(SubjectLabelDTO subjectLabelDTO);
     List<SubjectLabelDTO> converterBOlistToDTOlist(List<SubjectLabelBO> BOlist);
+
 }

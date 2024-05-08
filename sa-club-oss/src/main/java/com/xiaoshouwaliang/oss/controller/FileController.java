@@ -1,11 +1,9 @@
 package com.xiaoshouwaliang.oss.controller;
-
-import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.xiaoshouwaliang.oss.entity.Result;
 import com.xiaoshouwaliang.oss.service.FileService;
-import com.xiaoshouwaliang.oss.util.MinioUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +26,13 @@ public class FileController {
             throw new RuntimeException(e);
         }
     }
+
+    @RequestMapping("/getUrl")
+    public String getUrl(String bucketName, String objectName) throws Exception {
+        return fileService.getUrl(bucketName, objectName);
+    }
     @PostMapping("/upload")
-    public String upload(MultipartFile uploadFile,String bucket,String objectName){
-        return fileService.uploadFile(uploadFile,bucket,objectName);
+    public Result<String> upload(MultipartFile uploadFile, String bucket, String objectName){
+        return Result.ok(fileService.uploadFile(uploadFile,bucket,objectName));
     }
 }

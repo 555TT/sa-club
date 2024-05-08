@@ -135,8 +135,7 @@
     <select id="batchQueryByIds" resultMap="SubjectLabelMap">
         select *
         from subject_label
-        where id
-            in
+        where id  in
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>

@@ -125,8 +125,10 @@ id, subject_id, category_id, label_id, created_by, created_time, update_by, upda
             </if>
         </where>
     </select>
-    <select id="querySubjectCountByCategoryId" resultType="java.lang.Integer">
-        SELECT count(DISTINCT subject_id) from subject_mapping WHERE category_id=#{categoryId}
+    <select id="querySubjectCount" resultType="java.lang.Integer">
+        SELECT count(DISTINCT subject_id)
+        from subject_mapping join subject_label on subject_mapping.label_id=subject_label.id
+        WHERE subject_label.category_id=#{categoryId}
     </select>
 
     <!--新增所有列-->

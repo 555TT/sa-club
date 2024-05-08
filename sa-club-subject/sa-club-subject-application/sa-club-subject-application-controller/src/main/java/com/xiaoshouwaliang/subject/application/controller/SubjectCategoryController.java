@@ -3,7 +3,9 @@ package com.xiaoshouwaliang.subject.application.controller;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
 import com.xiaoshouwaliang.subject.application.controller.converter.SubjectCategoryDTOConverter;
+import com.xiaoshouwaliang.subject.application.controller.converter.SubjectLabelDTOConverter;
 import com.xiaoshouwaliang.subject.application.controller.dto.SubjectCategoryDTO;
+import com.xiaoshouwaliang.subject.application.controller.dto.SubjectLabelDTO;
 import com.xiaoshouwaliang.subject.common.entity.Result;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectCategoryBO;
 import com.xiaoshouwaliang.subject.domain.service.SubjectCategoryDomainService;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -49,7 +53,7 @@ public class SubjectCategoryController {
 
     /**
      * 查询大分类
-     * @param subjectCategoryDTO
+     * @param subjectCategoryDTO categoryType 分类类型 1为大分类
      * @return
      */
     @PostMapping("/queryPrimaryCategory")
@@ -104,7 +108,13 @@ public class SubjectCategoryController {
             Long categoryId = subjectCategoryDTO.getId();
             Preconditions.checkNotNull(categoryId,"大分类id不能为空");
             List<SubjectCategoryBO> resultBO= subjectCategoryDomainService.queryCategoryAndLabel(categoryId);
-            List<SubjectCategoryDTO> resultDTO = SubjectCategoryDTOConverter.INSTANCE.converterBOlistToDTOlist(resultBO);
+            List<SubjectCategoryDTO> resultDTO = new LinkedList<>();
+            for(SubjectCategoryBO subjectCategoryBO:resultBO){
+                SubjectCategoryDTO dto = SubjectCategoryDTOConverter.INSTANCE.converterBOToDTO(subjectCategoryBO);
+                List<SubjectLabelDTO> subjectLabelDTOS = SubjectLabelDTOConverter.INSTANCE.converterBOlistToDTOlist(subjectCategoryBO.getLabelBOList());
+                dto.setLabelDTOList(subjectLabelDTOS);
+                resultDTO.add(dto);
+            }
             return Result.ok(resultDTO);
         } catch (Exception e) {
             log.error("SubjectCategoryController.queryCategoryAndLabel.error:{}",e.getMessage(),e);

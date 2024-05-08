@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class  MybatisConfiguration {
 
-//    @Bean
-//    public MybatisPlusInterceptor mybatisPlusInterceptor(){
-//        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
-//        mybatisPlusInterceptor.addInnerInterceptor(new MybatisPlusAllSqlLog());
-//        return mybatisPlusInterceptor;
-//    }
+ /*   @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor(){
+        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+        mybatisPlusInterceptor.addInnerInterceptor(new MybatisPlusAllSqlLog());
+        return mybatisPlusInterceptor;
+    }*/
 
 }

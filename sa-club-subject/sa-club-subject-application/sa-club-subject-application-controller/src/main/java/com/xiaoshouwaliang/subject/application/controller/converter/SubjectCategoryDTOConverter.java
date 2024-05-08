@@ -16,4 +16,9 @@ public interface SubjectCategoryDTOConverter {
     SubjectCategoryDTOConverter INSTANCE=Mappers.getMapper(SubjectCategoryDTOConverter.class);
     SubjectCategoryBO converterDtoToCategoryBO(SubjectCategoryDTO subjectCategoryDTO);
     List<SubjectCategoryDTO> converterBOlistToDTOlist(List<SubjectCategoryBO> BOlist);
+
+
+    SubjectCategoryDTO converterBOToDTO(SubjectCategoryBO subjectCategoryBO);
+
+
 }
