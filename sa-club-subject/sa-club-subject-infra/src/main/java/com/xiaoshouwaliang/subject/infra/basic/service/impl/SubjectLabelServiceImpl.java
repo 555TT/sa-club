@@ -66,8 +66,8 @@ public class SubjectLabelServiceImpl implements SubjectLabelService {
     }
 
     @Override
-    public List<SubjectLabel> queryByCategoryId(SubjectLabel subjectLabel) {
-        List<SubjectLabel> result =subjectLabelDao.queryByCategoryId(subjectLabel);
+    public List<SubjectLabel> queryByCondition(SubjectLabel subjectLabel) {
+        List<SubjectLabel> result =subjectLabelDao.queryByCondition(subjectLabel);
         return result;
     }
 

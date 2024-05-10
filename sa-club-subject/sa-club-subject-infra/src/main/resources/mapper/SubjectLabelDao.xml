@@ -100,7 +100,7 @@
             </if>
         </where>
     </select>
-    <select id="queryByCategoryId" resultMap="SubjectLabelMap">
+    <select id="queryByCondition" resultMap="SubjectLabelMap">
         select * from subject_label
         <where>
             <if test="id != null">

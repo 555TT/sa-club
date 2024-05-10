@@ -45,7 +45,7 @@ public interface SubjectLabelService {
     boolean deleteById(Long id);
 
     //根据分类id查询所有标签
-    List<SubjectLabel> queryByCategoryId(SubjectLabel subjectLabel);
+    List<SubjectLabel> queryByCondition(SubjectLabel subjectLabel);
 
     /**
      * 根据批量id查询标签

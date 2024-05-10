@@ -7,14 +7,19 @@ import com.xiaoshouwaliang.subject.domain.entity.SubjectLabelBO;
 import com.xiaoshouwaliang.subject.domain.service.SubjectLabelDomainService;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectCategory;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLabel;
+import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectMapping;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectCategoryService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
+import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 小手WA凉
@@ -28,6 +33,8 @@ public class SubjectLabelDomainServiceImpl implements SubjectLabelDomainService 
     private SubjectLabelService subjectLabelService;
     @Resource
     private SubjectCategoryService subjectCategoryService;
+    @Resource
+    private SubjectMappingService subjectMappingService;
     @Override
     public void addLabel(SubjectLabelBO subjectLabelBO) {
         SubjectLabel subjectLabel = SubjectLabelConverter.INSTANCE.converterBoToLabel(subjectLabelBO);
@@ -60,30 +67,40 @@ public class SubjectLabelDomainServiceImpl implements SubjectLabelDomainService 
     @Override
     public List<SubjectLabelBO> queryLabel(SubjectLabelBO subjectLabelBO) {
         SubjectLabel subjectLabel = SubjectLabelConverter.INSTANCE.converterBoToLabel(subjectLabelBO);
-        if(log.isInfoEnabled()){
+        if (log.isInfoEnabled()) {
             log.info("SubjectLabelDomainServiceImpl.addLabel.POJO:{}", JSON.toJSONString(subjectLabel));
         }
         //如果是一级分类则查出所有标签
         SubjectCategory subjectCategory = subjectCategoryService.queryById(subjectLabelBO.getCategoryId());
-        if(1==subjectCategory.getCategoryType()){//一级分类的categoryType为1
+        if (1 == subjectCategory.getCategoryType()) {//一级分类的categoryType为1
             //查出该一级分类下的所有标签
-            //查询一级分类下的所有二级分类
-            SubjectCategory subjectCategory1 = new SubjectCategory();
-            subjectCategory1.setParentId(subjectCategory.getId());
-            List<SubjectCategory> categoryList = subjectCategoryService.queryCategory(subjectCategory1);
-            List<SubjectLabelBO> list=new LinkedList<>();
-            SubjectLabel subjectLabel1 = new SubjectLabel();
-            categoryList.forEach(category->{
-                subjectLabel1.setCategoryId(category.getId());
-                subjectCategory1.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
-                List<SubjectLabel> subjectLabels = subjectLabelService.queryByCategoryId(subjectLabel1);
-                List<SubjectLabelBO> list1 = SubjectLabelConverter.INSTANCE.converterPOListToBOList(subjectLabels);
-                list.addAll(list1);
-            });
+            SubjectLabel label = new SubjectLabel();
+            label.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.code);
+            label.setCategoryId(subjectCategory.getId());
+            List<SubjectLabel> subjectLabels = subjectLabelService.queryByCondition(label);
+            List<SubjectLabelBO> list = SubjectLabelConverter.INSTANCE.converterPOListToBOList(subjectLabels);
             return list;
         }
-        subjectLabel.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.getCode());
-        List<SubjectLabel> list=subjectLabelService.queryByCategoryId(subjectLabel);
-        return SubjectLabelConverter.INSTANCE.converterPOListToBOList(list);
+        //否则为二级分类
+        Long categoryId = subjectLabelBO.getCategoryId();
+        SubjectMapping subjectMapping = new SubjectMapping();
+        subjectMapping.setCategoryId(categoryId);
+        subjectMapping.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.getCode());
+        List<SubjectMapping> mappingList = subjectMappingService.queryByCondition(subjectMapping);
+        if (CollectionUtils.isEmpty(mappingList)) {
+            return Collections.emptyList();
+        }
+        List<Long> labelIdList = mappingList.stream().map(SubjectMapping::getLabelId).collect(Collectors.toList());
+        List<SubjectLabel> labelList = subjectLabelService.batchQueryByIds(labelIdList);
+        List<SubjectLabelBO> boList = new LinkedList<>();
+        labelList.forEach(label -> {
+            SubjectLabelBO bo = new SubjectLabelBO();
+            bo.setId(label.getId());
+            bo.setLabelName(label.getLabelName());
+            bo.setCategoryId(categoryId);
+            bo.setSortNum(label.getSortNum());
+            boList.add(bo);
+        });
+        return boList;
     }
 }
