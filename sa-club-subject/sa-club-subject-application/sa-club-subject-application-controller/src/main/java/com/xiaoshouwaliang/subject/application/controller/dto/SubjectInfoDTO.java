@@ -60,7 +60,8 @@ public class SubjectInfoDTO extends PageInfo implements Serializable {
      * 标签name
      */
     private List<String> labelName;
-
+    //全文检索的keyWord
+    private String keyWord;
 
 }
 

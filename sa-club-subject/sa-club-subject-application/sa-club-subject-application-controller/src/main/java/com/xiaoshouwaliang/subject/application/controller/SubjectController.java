@@ -8,6 +8,7 @@ import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.common.entity.Result;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
 import com.xiaoshouwaliang.subject.domain.service.SubjectInfoDomainService;
+import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -97,6 +98,27 @@ public class SubjectController {
         } catch (Exception e) {
             log.error("SubjectCategoryController.getSubjectInfo.error:{}",e.getMessage(),e);
             return Result.fail("查询题目详细信息失败");
+        }
+    }
+
+    /**
+     * 全文检索
+     * @param subjectInfoDTO
+     * @return
+     */
+    @PostMapping("/getSubjectPageBySearch")
+    public Result<PageResult<SubjectInfoEs>> getSubjectPageBySearch(@RequestBody SubjectInfoDTO subjectInfoDTO){
+        try {
+            if (log.isInfoEnabled()) {
+                log.info("SubjectController.getSubjectPageBySearch.dto:{}", JSON.toJSONString(subjectInfoDTO));
+            }
+            Preconditions.checkNotNull(subjectInfoDTO.getKeyWord(), "检索内容不能为空");
+            SubjectInfoBO subjectInfoBO = SubjectInfoDTOConverter.INSTANCE.converterDtoToSubjectBO(subjectInfoDTO);
+            PageResult<SubjectInfoEs> resultBO= subjectInfoDomainService.getSubjectPageBySearch(subjectInfoBO);
+            return Result.ok(resultBO);
+        } catch (Exception e) {
+            log.error("SubjectCategoryController.getSubjectPageBySearch.error:{}",e.getMessage(),e);
+            return Result.fail("全文检索失败");
         }
     }
 }

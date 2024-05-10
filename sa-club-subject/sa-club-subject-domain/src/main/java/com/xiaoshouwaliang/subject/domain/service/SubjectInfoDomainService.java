@@ -2,6 +2,7 @@ package com.xiaoshouwaliang.subject.domain.service;
 
 import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
+import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
 
 /**
  * @author 小手WA凉
@@ -20,4 +21,11 @@ public interface SubjectInfoDomainService {
 
 
     SubjectInfoBO querySubjectInfo(SubjectInfoBO subjectInfoBO);
+
+    /**
+     * 全文检索
+     * @param subjectInfoBO
+     * @return
+     */
+    PageResult<SubjectInfoEs> getSubjectPageBySearch(SubjectInfoBO subjectInfoBO);
 }

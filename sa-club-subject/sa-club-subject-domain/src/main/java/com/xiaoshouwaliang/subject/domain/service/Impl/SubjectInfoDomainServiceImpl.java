@@ -3,6 +3,7 @@ package com.xiaoshouwaliang.subject.domain.service.Impl;
 import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.common.enums.IsDeletedFlagEnum;
+import com.xiaoshouwaliang.subject.common.util.IdWorkerUtil;
 import com.xiaoshouwaliang.subject.domain.converter.SubjectInfoConverter;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectOptionBO;
@@ -10,17 +11,19 @@ import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandler;
 import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandlerFactory;
 import com.xiaoshouwaliang.subject.domain.service.SubjectInfoDomainService;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfo;
+import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLabel;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectMapping;
+import com.xiaoshouwaliang.subject.infra.basic.service.SubjectEsService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectInfoService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,8 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
     private SubjectMappingService subjectMappingService;
     @Resource
     private SubjectLabelService subjectLabelService;
+    @Resource
+    private SubjectEsService subjectEsService;
 
     @Transactional
     @Override
@@ -71,6 +76,16 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
             }
         }
         subjectMappingService.batchInsert(subjectMappings);
+        //同步到es
+        SubjectInfoEs subjectInfoEs = new SubjectInfoEs();
+        subjectInfoEs.setDocId(new IdWorkerUtil(1,1,1).nextId());
+        subjectInfoEs.setSubjectId(subjectInfo.getId());
+        subjectInfoEs.setSubjectAnswer(subjectInfoBO.getSubjectAnswer());
+        subjectInfoEs.setSubjectName(subjectInfo.getSubjectName());
+        subjectInfoEs.setSubjectType(subjectInfo.getSubjectType());
+        subjectInfoEs.setCreateTime(new Date().getTime());
+        subjectInfoEs.setCreateUser("小手WA凉");
+        subjectEsService.insert(subjectInfoEs);
     }
 
     @Override
@@ -119,5 +134,14 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
         List<String> labelNames=resultLabels.stream().map(SubjectLabel::getLabelName).collect(Collectors.toList());
         resultBo.setLabelName(labelNames);
         return resultBo;
+    }
+
+    @Override
+    public PageResult<SubjectInfoEs> getSubjectPageBySearch(SubjectInfoBO subjectInfoBO) {
+        SubjectInfoEs subjectInfoEs = new SubjectInfoEs();
+        subjectInfoEs.setKeyWord(subjectInfoBO.getKeyWord());
+        subjectInfoEs.setPageNo(subjectInfoBO.getPageNo());
+        subjectInfoEs.setPageSize(subjectInfoBO.getPageSize());
+        return subjectEsService.querySubjectList(subjectInfoEs);
     }
 }
