@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.common.enums.IsDeletedFlagEnum;
 import com.xiaoshouwaliang.subject.common.util.IdWorkerUtil;
+import com.xiaoshouwaliang.subject.common.util.LoginUtil;
 import com.xiaoshouwaliang.subject.domain.converter.SubjectInfoConverter;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectOptionBO;
 import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandler;
 import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandlerFactory;
+import com.xiaoshouwaliang.subject.domain.redis.RedisUtil;
 import com.xiaoshouwaliang.subject.domain.service.SubjectInfoDomainService;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfo;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
@@ -21,6 +23,7 @@ import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
 import com.xiaoshouwaliang.subject.infra.entity.UserInfo;
 import com.xiaoshouwaliang.subject.infra.rpc.UserRpc;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -49,7 +52,10 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
     private SubjectEsService subjectEsService;
     @Resource
     private UserRpc userRpc;
+    @Resource
+    private RedisUtil redisUtil;
 
+    private final String RANK_KEY="rank_Key";
     @Transactional
     @Override
     public void addSubject(SubjectInfoBO subjectInfoBO) {
@@ -90,6 +96,8 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
         subjectInfoEs.setCreateTime(new Date().getTime());
         subjectInfoEs.setCreateUser("小手WA凉");
         subjectEsService.insert(subjectInfoEs);
+        //同步到redis排行榜
+        redisUtil.addScore(RANK_KEY, LoginUtil.getLoginId(),1);
     }
 
     @Override
@@ -151,19 +159,22 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
 
     @Override
     public List<SubjectInfoBO> getContributeList() {
-        List<SubjectInfo> subjectInfoList=subjectInfoService.getContributeList();
-        if(CollectionUtils.isEmpty(subjectInfoList)){
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = redisUtil.rankWithScore(RANK_KEY, 0, 5);
+        if (log.isInfoEnabled()) {
+            log.info("getContributeList.typedTuples:{}", JSON.toJSONString(typedTuples));
+        }
+        if(CollectionUtils.isEmpty(typedTuples)){
             return Collections.emptyList();
         }
         LinkedList<SubjectInfoBO> result = new LinkedList<>();
-        for(SubjectInfo subjectInfo:subjectInfoList){
-            UserInfo userInfo = userRpc.getUserInfo(subjectInfo.getCreatedBy());
+        typedTuples.forEach(rank->{
+            UserInfo userInfo = userRpc.getUserInfo(rank.getValue());
             SubjectInfoBO subjectInfoBO = new SubjectInfoBO();
             subjectInfoBO.setCreateUserAvatar(userInfo.getAvatar());//出题人头像
             subjectInfoBO.setCreateUser(userInfo.getNickName());//昵称
-            subjectInfoBO.setSubjectCount(subjectInfo.getSubjectCount());//出题数量
+            subjectInfoBO.setSubjectCount(rank.getScore().intValue());//出题数量
             result.add(subjectInfoBO);
-        }
+        });
         return result;
     }
 }
