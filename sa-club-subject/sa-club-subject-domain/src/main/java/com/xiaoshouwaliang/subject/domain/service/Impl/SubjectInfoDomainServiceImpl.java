@@ -18,13 +18,15 @@ import com.xiaoshouwaliang.subject.infra.basic.service.SubjectEsService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectInfoService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectMappingService;
+import com.xiaoshouwaliang.subject.infra.entity.UserInfo;
+import com.xiaoshouwaliang.subject.infra.rpc.UserRpc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +47,8 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
     private SubjectLabelService subjectLabelService;
     @Resource
     private SubjectEsService subjectEsService;
+    @Resource
+    private UserRpc userRpc;
 
     @Transactional
     @Override
@@ -143,5 +147,23 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
         subjectInfoEs.setPageNo(subjectInfoBO.getPageNo());
         subjectInfoEs.setPageSize(subjectInfoBO.getPageSize());
         return subjectEsService.querySubjectList(subjectInfoEs);
+    }
+
+    @Override
+    public List<SubjectInfoBO> getContributeList() {
+        List<SubjectInfo> subjectInfoList=subjectInfoService.getContributeList();
+        if(CollectionUtils.isEmpty(subjectInfoList)){
+            return Collections.emptyList();
+        }
+        LinkedList<SubjectInfoBO> result = new LinkedList<>();
+        for(SubjectInfo subjectInfo:subjectInfoList){
+            UserInfo userInfo = userRpc.getUserInfo(subjectInfo.getCreatedBy());
+            SubjectInfoBO subjectInfoBO = new SubjectInfoBO();
+            subjectInfoBO.setCreateUserAvatar(userInfo.getAvatar());//出题人头像
+            subjectInfoBO.setCreateUser(userInfo.getNickName());//昵称
+            subjectInfoBO.setSubjectCount(subjectInfo.getSubjectCount());//出题数量
+            result.add(subjectInfoBO);
+        }
+        return result;
     }
 }

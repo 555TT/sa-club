@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 小手WA凉
@@ -119,6 +120,22 @@ public class SubjectController {
         } catch (Exception e) {
             log.error("SubjectCategoryController.getSubjectPageBySearch.error:{}",e.getMessage(),e);
             return Result.fail("全文检索失败");
+        }
+    }
+
+    /**
+     * 获取出题排行榜
+     * @return
+     */
+    @PostMapping("/getContributeList")
+    public Result<List<SubjectInfoDTO>> getContributeList(){
+        try {
+            List<SubjectInfoBO> subjectInfoBOList=subjectInfoDomainService.getContributeList();
+            List<SubjectInfoDTO> subjectInfoDTOS = SubjectInfoDTOConverter.INSTANCE.converterBOListToSubjectDTOList(subjectInfoBOList);
+            return Result.ok(subjectInfoDTOS);
+        } catch (Exception e) {
+            log.error("SubjectCategoryController.getContributeList.error:{}",e.getMessage(),e);
+            return Result.fail("获取出题排行榜失败");
         }
     }
 }

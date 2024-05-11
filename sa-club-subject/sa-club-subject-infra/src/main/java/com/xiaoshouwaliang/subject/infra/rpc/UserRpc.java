@@ -5,7 +5,6 @@ import com.xiaoshouwaliang.auth.api.entity.Result;
 import com.xiaoshouwaliang.auth.api.feignservice.UserFeignService;
 import com.xiaoshouwaliang.subject.infra.entity.UserInfo;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 
 /**

@@ -16,6 +16,7 @@ public interface SubjectInfoDTOConverter {
     SubjectInfoDTOConverter INSTANCE=Mappers.getMapper(SubjectInfoDTOConverter.class);
     SubjectInfoBO converterDtoToSubjectBO(SubjectInfoDTO subjectInfoDTO);
     SubjectInfoDTO converterBOToSubjectDTO(SubjectInfoBO subjectInfoBO);
+    List<SubjectInfoDTO> converterBOListToSubjectDTOList(List<SubjectInfoBO>  subjectInfoBOList);
 
 
 }

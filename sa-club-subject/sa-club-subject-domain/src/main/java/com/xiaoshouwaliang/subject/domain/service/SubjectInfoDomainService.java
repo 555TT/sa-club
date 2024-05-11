@@ -4,6 +4,8 @@ import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
 
+import java.util.List;
+
 /**
  * @author 小手WA凉
  * @date 2024-04-20
@@ -28,4 +30,11 @@ public interface SubjectInfoDomainService {
      * @return
      */
     PageResult<SubjectInfoEs> getSubjectPageBySearch(SubjectInfoBO subjectInfoBO);
+
+    /**
+     * 获取出题排行榜
+     * @return
+     */
+    List<SubjectInfoBO> getContributeList();
+
 }

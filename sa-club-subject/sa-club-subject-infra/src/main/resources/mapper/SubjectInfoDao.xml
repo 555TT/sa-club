@@ -165,6 +165,13 @@
         </if>
         limit #{start},#{pageSize}
     </select>
+    <select id="getContributeList" resultType="com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfo">
+        select count(*) as subjectCount,created_by  from subject_info
+        where is_deleted=0
+        group by created_by
+        limit 0,5
+
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
