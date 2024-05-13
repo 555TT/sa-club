@@ -12,10 +12,8 @@ import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandler;
 import com.xiaoshouwaliang.subject.domain.handler.SubjectTypeHandlerFactory;
 import com.xiaoshouwaliang.subject.domain.redis.RedisUtil;
 import com.xiaoshouwaliang.subject.domain.service.SubjectInfoDomainService;
-import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfo;
-import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfoEs;
-import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLabel;
-import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectMapping;
+import com.xiaoshouwaliang.subject.domain.service.SubjectLikedDomainService;
+import com.xiaoshouwaliang.subject.infra.basic.entity.*;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectEsService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectInfoService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLabelService;
@@ -54,6 +52,8 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
     private UserRpc userRpc;
     @Resource
     private RedisUtil redisUtil;
+    @Resource
+    private SubjectLikedDomainService subjectLikedDomainService;
 
     private final String RANK_KEY="rank_Key";
     @Transactional
@@ -145,9 +145,21 @@ public class SubjectInfoDomainServiceImpl implements SubjectInfoDomainService {
         List<SubjectLabel> resultLabels=subjectLabelService.batchQueryByIds(labels);
         List<String> labelNames=resultLabels.stream().map(SubjectLabel::getLabelName).collect(Collectors.toList());
         resultBo.setLabelName(labelNames);
+        resultBo.setLikedCount(subjectLikedDomainService.subjectLikedCount(subjectInfoBO.getId()));
+        resultBo.setLiked(subjectLikedDomainService.isLiked(subjectInfoBO.getId(), LoginUtil.getLoginId()));
+        assembleSubjectCursor(subjectInfoBO,resultBo);
         return resultBo;
     }
 
+    void assembleSubjectCursor(SubjectInfoBO subjectInfoBO,SubjectInfoBO bo){
+        Long subjectId = subjectInfoBO.getId();
+        Long labelId = subjectInfoBO.getLabelId();
+        Long categoryId = subjectInfoBO.getCategoryId();
+        Long nextSubjectId =subjectInfoService.querySubjectIdCursor(subjectId,categoryId,labelId,1);
+        bo.setNextSubjectId(nextSubjectId);
+        Long lastSubjectId =subjectInfoService.querySubjectIdCursor(subjectId,categoryId,labelId,0);
+        bo.setLastSubjectId(lastSubjectId);
+    }
     @Override
     public PageResult<SubjectInfoEs> getSubjectPageBySearch(SubjectInfoBO subjectInfoBO) {
         SubjectInfoEs subjectInfoEs = new SubjectInfoEs();

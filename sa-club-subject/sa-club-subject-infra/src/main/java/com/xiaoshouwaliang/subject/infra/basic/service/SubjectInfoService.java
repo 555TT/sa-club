@@ -51,4 +51,13 @@ public interface SubjectInfoService {
 
     List<SubjectInfo> getContributeList();
 
+    /**
+     * 上一题下一题
+     * @param subjectId
+     * @param categoryId
+     * @param labelId
+     * @param i 1上一题 0下一题
+     * @return
+     */
+    Long querySubjectIdCursor(Long subjectId, Long categoryId, Long labelId, int i);
 }

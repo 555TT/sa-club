@@ -73,8 +73,26 @@ public class SubjectInfoDTO extends PageInfo implements Serializable {
      */
     private String createUserAvatar;
     /**
-     * 出的题目数量
+     * 出的题目数量（排行榜）
      */
     private Integer subjectCount;
+
+    /**
+     * 当前用户是否点赞当前题目
+     */
+    private Boolean liked;
+    /**
+     * 当前题目的点赞数量
+     */
+    private Integer likedCount;
+    /**
+     * 下一题
+     */
+    private Long nextSubjectId;
+
+    /**
+     * 上一题
+     */
+    private Long lastSubjectId;
 }
 

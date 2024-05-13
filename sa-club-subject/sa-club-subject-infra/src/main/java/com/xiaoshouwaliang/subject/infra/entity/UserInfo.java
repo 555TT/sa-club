@@ -9,8 +9,14 @@ import lombok.Data;
 @Data
 public class UserInfo {
 
+    /**
+     * 用户名
+     */
     private String userName;
 
+    /**
+     * 昵称
+     */
     private String nickName;
     /**
      * 头像
