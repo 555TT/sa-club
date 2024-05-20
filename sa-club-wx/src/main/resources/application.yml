@@ -5,11 +5,11 @@ spring:
     # Redis数据库索引（默认为0）
     database: 1
     # Redis服务器地址
-    host: 8.149.141.179
+    host: *** #git提交做隐藏
     # Redis服务器连接端口
     port: 6379
     # Redis服务器连接密码（默认为空）
-    password: Wanghaoran666*.
+    password: *** #git提交做隐藏
     # 连接超时时间
     timeout: 10s
     lettuce:

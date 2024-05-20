@@ -29,11 +29,11 @@ spring:
     # Redis数据库索引（默认为0）
     database: 0
     # Redis服务器地址
-    host: 8.149.141.179
+    host: ****  #git提交做隐藏
     # Redis服务器连接端口
     port: 6379
     # Redis服务器连接密码（默认为空）
-    password: Wanghaoran666*.
+    password: ****  #git提交做隐藏
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -55,12 +55,12 @@ es:
   cluster:
     esConfigs[0]:
       name: c3b50a20cbbc
-      nodes: 101.42.52.133:9200
+      nodes: *** #git提交做隐藏
 xxl:
   job:
     accessToken: default_token
     admin:
-      addresses: http://8.149.141.179:8088/xxl-job-admin
+      addresses: ***  #git提交做隐藏
     executor:
       address:
       appname: sa-club-subject
