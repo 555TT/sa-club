@@ -5,7 +5,7 @@ spring:
     active: dev
   cloud:
     nacos:
-      server-addr: *** #git提交做隐藏
+      server-addr: 182.92.85.80:8848 #git提交做隐藏
       config:
         prefix: ${spring.application.name}
         group: DEFAULT_GROUP

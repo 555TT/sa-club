@@ -1,6 +1,6 @@
 server:
   port: 4000
 minio:
-  url: ** #git提交做隐藏
+  url: http://182.92.85.80:9000 #git提交做隐藏
   accessKey: minioadmin
   secretKey: minioadmin
