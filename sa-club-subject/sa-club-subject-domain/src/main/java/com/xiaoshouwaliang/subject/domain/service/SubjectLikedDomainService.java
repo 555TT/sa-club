@@ -32,4 +32,11 @@ public interface SubjectLikedDomainService {
 
 
     PageResult<SubjectLikedBO> getSubjectLikedPage(SubjectLikedBO subjectLikedBO);
+
+    /**
+     * 通过MQ同步点赞数据
+     * @param subjectLikedBO
+     */
+
+    void syncLikedMsg(SubjectLikedBO subjectLikedBO);
 }

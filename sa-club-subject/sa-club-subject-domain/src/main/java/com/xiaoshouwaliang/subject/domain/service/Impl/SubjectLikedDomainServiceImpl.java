@@ -1,10 +1,12 @@
 package com.xiaoshouwaliang.subject.domain.service.Impl;
+import com.alibaba.fastjson.JSON;
 import com.xiaoshouwaliang.subject.common.entity.PageResult;
 import com.xiaoshouwaliang.subject.common.enums.IsDeletedFlagEnum;
 import com.xiaoshouwaliang.subject.common.enums.LikedEnum;
 import com.xiaoshouwaliang.subject.domain.converter.SubjectLikeConverter;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectInfoBO;
 import com.xiaoshouwaliang.subject.domain.entity.SubjectLikedBO;
+import com.xiaoshouwaliang.subject.domain.entity.SubjectLikedMessage;
 import com.xiaoshouwaliang.subject.domain.redis.RedisUtil;
 import com.xiaoshouwaliang.subject.domain.service.SubjectLikedDomainService;
 import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectInfo;
@@ -12,6 +14,7 @@ import com.xiaoshouwaliang.subject.infra.basic.entity.SubjectLiked;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectInfoService;
 import com.xiaoshouwaliang.subject.infra.basic.service.SubjectLikedService;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.LinkedList;
@@ -35,13 +38,21 @@ public class SubjectLikedDomainServiceImpl implements SubjectLikedDomainService 
     private RedisUtil redisUtil;
     @Resource
     private SubjectInfoService subjectInfoService;
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
     @Override
     public void addLike(SubjectLikedBO subjectLikedBO) {
         Long subjectId = subjectLikedBO.getSubjectId();
         String likeUserId = subjectLikedBO.getLikeUserId();
         Integer status = subjectLikedBO.getStatus();
-        String hashKey=subjectId.toString()+":"+likeUserId;
-        redisUtil.putHash(SUBJECT_LIKED_KEY,hashKey,status.toString());
+//        String hashKey=subjectId.toString()+":"+likeUserId;
+//        redisUtil.putHash(SUBJECT_LIKED_KEY,hashKey,status.toString());
+        SubjectLikedMessage subjectLikedMessage = new SubjectLikedMessage();
+        subjectLikedMessage.setSubjectId(subjectId);
+        subjectLikedMessage.setLikeUserId(likeUserId);
+        subjectLikedMessage.setStatus(status);
+        rocketMQTemplate.convertAndSend("subject-liked", JSON.toJSONString(subjectLikedMessage));
+
         String countKey=SUBJECT_LIKED_COUNT_KEY+"."+subjectId;
         String detailKey=SUBJECT_LIKED_DETAIL_KEY+"."+subjectId+"."+likeUserId;
         if(LikedEnum.LIKED.code==status){
@@ -113,5 +124,15 @@ public class SubjectLikedDomainServiceImpl implements SubjectLikedDomainService 
         pageResult.setRecords(subjectLikedBOS);
         pageResult.setTotal(count);
         return pageResult;
+    }
+
+    @Override
+    public void syncLikedMsg(SubjectLikedBO subjectLikedBO) {
+        SubjectLiked subjectLiked = new SubjectLiked();
+        subjectLiked.setSubjectId(Long.valueOf(subjectLikedBO.getSubjectId()));
+        subjectLiked.setLikeUserId(subjectLikedBO.getLikeUserId());
+        subjectLiked.setStatus(subjectLikedBO.getStatus());
+        subjectLiked.setIsDeleted(IsDeletedFlagEnum.UN_DELETED.getCode());
+        subjectLikedService.insert(subjectLiked);
     }
 }

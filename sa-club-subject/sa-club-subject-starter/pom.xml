@@ -51,6 +51,11 @@
             <artifactId>sa-club-subject-application-controller</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.xiaoshouwaliang</groupId>
+            <artifactId>sa-club-subject-application-mq</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
